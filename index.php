@@ -10,8 +10,8 @@ $charset = 'utf8mb4';
 $dsn = "mysql:host=$host; dbname=$db; charset=$charset";
 
 $options =[
-    PDO::ATTR_ERR => PDO:: ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSCOC,
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
 
@@ -75,7 +75,7 @@ if($section==='students'){
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($students as student): ?>
+                <?php foreach($students as $student): ?>
                     <tr>
                         <td>
                             <?=htmlspecialchars($student['student_id']) ?>
@@ -94,10 +94,11 @@ if($section==='students'){
                         </td>
                         <td>
                             <a>Edit</a>
-
+                            |
                             <a>Delete</a>
                         </td>
                     </tr>
+                <?php endforeach?>
             </tbody>
         </table>
     <?php endif;?>
