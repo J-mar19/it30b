@@ -17,7 +17,6 @@ $options =[
 
 try{
     $pdo = new PDO($dsn,$user,$pass, $options);
-    echo 'connection successful';
 }catch(PDOExeption $e){
     die("Database connection failed" . $e->getMessage());
 }
@@ -45,10 +44,12 @@ if($section==='students'){
 
 // Create Student
 if($section=='students' && $action==='create'){
+
     if($_SERVER['REQUEST_METHOD']==='POST'){
-        $firstName = trim($_POST[student_first_name] ?? '');
-        $lastName = trim($_POST[student_last_name] ?? '');
-        $course = trim($_POST[student_course] ?? '');
+
+        $firstName = trim($_POST['student_first_name'] ?? '');
+        $lastName = trim($_POST['student_last_name'] ?? '');
+        $course = trim($_POST['student_course'] ?? '');
 
         if($firstName !== '' && $lastName !=='' && $course!== ''){
             $sql = "
@@ -68,7 +69,7 @@ if($section=='students' && $action==='create'){
                 $course
             ]);
 
-            header("Location: index.ph?section=students");
+            header("Location: index.php?section=students");
             exit;
         }
     }
