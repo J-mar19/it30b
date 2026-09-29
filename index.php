@@ -124,6 +124,108 @@ if($section=='students' && $action==='update'){
         }
     }
 
+// Determine current section
+$section = $_GET['section'] ??'books';
+
+// Determine CRUD Operation
+$action = $_GET['action'] ??'';
+
+// Fetch Books
+if($section==='books'){
+
+    $stmt = $pdo->query("
+        SELECT * 
+        FROM books
+        ORDER BY book_id DESC
+    ");
+
+    $books = $stmt->fetchAll();
+}
+
+// Create Books
+if($section=='students' && $action==='create'){
+
+    if($_SERVER['REQUEST_METHOD']==='POST'){
+
+        $title = trim($_POST['book_title'] ?? '');
+        $authorName = trim($_POST['book_author'] ?? '');
+        $category = trim($_POST['book_category'] ?? '');
+
+        if($title !== '' && $authorName !=='' && $category!== ''){
+            $sql = "
+                INSERT INTO students(
+                    book_title,
+                    book_author,
+                    book_category
+                )
+                VALUES (?,?,?)
+            ";
+
+            $stmt=$pdo->prepare($sql);
+
+            $stmt->execute([
+                $title,
+                $authorName,
+                $category
+            ]);
+
+            header("Location: index.php?section=books");
+            exit;
+        }
+    }
+}
+
+// Update Book
+    if($section=='books' && $action==='update'){
+
+    $bookId = (int) ($_GET['Id']) ?? 00;
+
+    // Retrieve book info by default
+    $stmt = $pdo->prepare("
+        SELECT *
+        FROM books
+        WHERE book_id = ?
+    ");
+
+    $stmt->execute([$bookId]);
+
+    $book = $stmt->fetch();
+    if(!$book){
+        die("Book Not Found");
+    }
+
+    // Update book on post
+    if($_SERVER['REQUEST_METHOD'] ==='POST'){
+
+        $title = trim($_POST['book_title'] ?? '');
+        $authorName = trim($_POST['book_author'] ?? '');
+        $category = trim($_POST['book_category'] ?? '');
+
+    if($_SERVER['REQUEST_METHOD']==='POST'){
+        $sql= "
+            UPDATE books
+            SET 
+                book_title = ?,
+                book_author = ?,
+                book_category = ?
+            WHERE book_id =?
+        ";
+
+            $stmt = $pdo->prepare($sql);
+
+            $stmt->execute([
+                $title,
+                $authorName,
+                $category,
+                $bookId
+            ]);
+
+            header("Location: index.php?section=books");
+            exit;
+            }   
+        }
+    }
+
 ?>
 
 
@@ -284,6 +386,138 @@ if($section=='students' && $action==='update'){
     <?php endif; ?>
     <?php if($section === 'books'): ?>
         <h1>Books</h1>
+
+        <p>
+            <a href="index.php?section=books&action=create">
+                Add Book
+            </a>
+        </p>
+
+        <?php if($action==='create'): ?>
+            <h2>Create Book</h2>
+
+            <form method="POST">
+                <p>
+                    <label>Title:</label>
+                    <br>
+                    <input type="text"
+                           name="book_title"
+                           required
+                    />
+                </p>
+
+                <p>
+                    <label>Author Name:</label>
+                    <br>
+                    <input type="text"
+                           name="book_author"
+                           required
+                    
+                    />
+                </p>
+
+                <p>
+                    <label>Category:</label>
+                    <br>
+                    <input type="text"
+                           name="book_category"
+                           required
+                    />
+                </p>
+                <button type="submit">
+                    Save
+                </button>
+
+                <a href="index.php?section=books">
+                    Cancel
+                </a>
+            
+        </form>
+    <?php elseif($action==='update'): ?>
+            <h2>Update Books Info</h2>
+
+            <form method="POST">
+                <p>
+                    <label>Title:</label>
+                    <br>
+                    <input type="text"
+                    name="book_title"
+                    value="<?=htmlspecialchars($book['book_title']) ?>"
+                    required
+                    />
+                </p>
+
+                <p>
+                    <label>Author:</label>
+                    <br>
+                    <input type="text"
+                           name="book_author"
+                           value="<?=htmlspecialchars($book['book_author']) ?>"
+                           required    
+                    />
+                </p>
+
+                <p>
+                    <label>Category:</label>
+                    <br>
+                    <input type="text"
+                           name="books_category"
+                           value="<?=htmlspecialchars($book['book_category']) ?>"
+                           required
+                    />
+                </p>
+
+                <button type="submit">
+                    Update
+                </button>
+
+                <a href="index.php?section=students">
+                    Cancel
+                </a>
+
+            </form>
+
+        <?php else: ?>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($books as $book): ?>
+                    <tr>
+                        <td>
+                            <?=htmlspecialchars($book['book_title']) ?>
+                        </td>
+                        <td>
+                            <?=htmlspecialchars($book['book_author']) ?>
+                        </td>
+                        <td>
+                            <?=htmlspecialchars($book['book_category']) ?>
+                        </td>
+                        <td>
+                            <?=htmlspecialchars($book['book_created_at']) ?>
+                        </td>
+                        <td>
+                            <a href="index.php?section=books&action+update&id=<?=$book['book_id']?>">
+                                Edit
+                            </a>
+                            |
+                            <a>Delete</a>
+                        </td>
+                    </tr>
+                <?php endforeach?>
+            </tbody>
+        </table>
+    <?php endif;?>
+
     <?php endif;?>
 
     <?php if($section === 'borrows'): ?>
