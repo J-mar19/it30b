@@ -51,7 +51,7 @@ if($section=='students' && $action==='create'){
         $lastName = trim($_POST['student_last_name'] ?? '');
         $course = trim($_POST['student_course'] ?? '');
 
-        if($firstName !== '' && $lastName !=='' && $course!== ''){
+        if($firstName !== '' && $lastName !== '' && $course !== ''){
             $sql = "
                 INSERT INTO students(
                     student_first_name,
@@ -78,7 +78,7 @@ if($section=='students' && $action==='create'){
 // Update Student
 if($section=='students' && $action==='update'){
 
-    $studentId = (int) ($_GET['Id']) ?? 00;
+    $studentId = (int) ($_GET['id']) ?? 00;
 
     // Retrieve student info by default
     $stmt = $pdo->prepare("
@@ -101,14 +101,16 @@ if($section=='students' && $action==='update'){
         $lastName = trim($_POST['student_last_name'] ?? '');
         $course = trim($_POST['student_course'] ?? '');
 
-        $sql=("
+        if($firstName !== '' && $lastName !== '' && $course !== ''){
+
+         $sql= "
             UPDATE students
             SET 
                 student_first_name = ?,
                 student_last_name = ?,
                 student_course = ?
-            WHERE student_id =?
-        ");
+            WHERE student_id = ?
+        ";
 
             $stmt = $pdo->prepare($sql);
 
@@ -121,16 +123,11 @@ if($section=='students' && $action==='update'){
 
             header("Location: index.php?section=students");
             exit;
+             }
         }
     }
 
-// Determine current section
-$section = $_GET['section'] ??'books';
-
-// Determine CRUD Operation
-$action = $_GET['action'] ??'';
-
-// Fetch Books
+    // Fetch Students
 if($section==='books'){
 
     $stmt = $pdo->query("
@@ -143,7 +140,7 @@ if($section==='books'){
 }
 
 // Create Books
-if($section=='students' && $action==='create'){
+if($section== 'books' && $action=== 'create'){
 
     if($_SERVER['REQUEST_METHOD']==='POST'){
 
@@ -151,9 +148,9 @@ if($section=='students' && $action==='create'){
         $authorName = trim($_POST['book_author'] ?? '');
         $category = trim($_POST['book_category'] ?? '');
 
-        if($title !== '' && $authorName !=='' && $category!== ''){
+        if($title !== '' && $authorName !=='' && $category !== ''){
             $sql = "
-                INSERT INTO students(
+                INSERT INTO books(
                     book_title,
                     book_author,
                     book_category
@@ -178,7 +175,7 @@ if($section=='students' && $action==='create'){
 // Update Book
     if($section=='books' && $action==='update'){
 
-    $bookId = (int) ($_GET['Id']) ?? 00;
+    $bookId = (int) ($_GET['id']) ?? 00;
 
     // Retrieve book info by default
     $stmt = $pdo->prepare("
@@ -194,34 +191,34 @@ if($section=='students' && $action==='create'){
         die("Book Not Found");
     }
 
-    // Update book on post
-    if($_SERVER['REQUEST_METHOD'] ==='POST'){
+        // Update book on post
+        if($_SERVER['REQUEST_METHOD'] ==='POST'){
 
-        $title = trim($_POST['book_title'] ?? '');
-        $authorName = trim($_POST['book_author'] ?? '');
-        $category = trim($_POST['book_category'] ?? '');
+            $title = trim($_POST['book_title'] ?? '');
+            $authorName = trim($_POST['book_author'] ?? '');
+            $category = trim($_POST['book_category'] ?? '');
 
-    if($_SERVER['REQUEST_METHOD']==='POST'){
-        $sql= "
-            UPDATE books
-            SET 
-                book_title = ?,
-                book_author = ?,
-                book_category = ?
-            WHERE book_id =?
-        ";
+        if($_SERVER['REQUEST_METHOD']==='POST'){
+            $sql= "
+                UPDATE books
+                SET 
+                    book_title = ?,
+                    book_author = ?,
+                    book_category = ?
+                WHERE book_id =?
+            ";
 
-            $stmt = $pdo->prepare($sql);
+                $stmt = $pdo->prepare($sql);
 
-            $stmt->execute([
-                $title,
-                $authorName,
-                $category,
-                $bookId
-            ]);
+                $stmt->execute([
+                    $title,
+                    $authorName,
+                    $category,
+                    $bookId
+                ]);
 
-            header("Location: index.php?section=books");
-            exit;
+                header("Location: index.php?section=books");
+                exit;
             }   
         }
     }
@@ -371,7 +368,7 @@ if($section=='students' && $action==='create'){
                             <?=htmlspecialchars($student['student_created_at']) ?>
                         </td>
                         <td>
-                            <a href="index.php?section=students&action+update&id=<?=$student['student_id']?>">
+                            <a href="index.php?section=students&action=update&id=<?=$student['student_id']?>">
                                 Edit
                             </a>
                             |
@@ -506,7 +503,7 @@ if($section=='students' && $action==='create'){
                             <?=htmlspecialchars($book['book_created_at']) ?>
                         </td>
                         <td>
-                            <a href="index.php?section=books&action+update&id=<?=$book['book_id']?>">
+                            <a href="index.php?section=books&action=update&id=<?=$book['book_id']?>">
                                 Edit
                             </a>
                             |
