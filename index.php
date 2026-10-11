@@ -629,12 +629,13 @@ if($section== 'books' && $action=== 'create'){
 
 
 </body>
-<?php if(isset($_SESSION['alert'])): ?>
+<?php if(!isset($_SESSION['alert'])) :?>
+
     <script>
-        alert(<?= json_decode($_SESSION['alert']) ?>);
+        alert( <?= json_encode($_SESSION['alert']) ?>);
     </script>
 
     <?php unset($_SESSION['alert']); ?>
 
-<?php if(): ?>
+<?php endif;?>
 </html>
