@@ -12,7 +12,7 @@ SELECT
     --Books
     b.book_title,
     b.book_author,
-    b.boo_category,
+    b.book_category,
 
     --Borrow Date
     br.borrow_date
