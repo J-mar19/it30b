@@ -355,21 +355,23 @@ for ($i = 6; $i >= 0; $i--) {
         <canvas id="categoryChart" width="400" height="200"></canvas>
     </div>
 
-</div>
-    
-<!-- Bar Chart: Borrow Activity -->
-<div class="chart-card">
-    <div class="chart-title">
-        Borrows · last 7 days
+    <!-- Bar Chart: Borrow Activity -->
+    <div class="chart-card">
+        <div class="chart-title">
+            Borrows · last 7 days
 
-        <span>
-            <span class="material-icons">trending_up</span>
-            activity
-        </span>
+            <span>
+                <span class="material-icons">trending_up</span>
+                activity
+            </span>
+        </div>
+
+        <canvas id="borrowChart" width="400" height="200"></canvas>
     </div>
 
-    <canvas id="borrowChart" width="400" height="200"></canvas>
 </div>
+    
+
 </body>
 
 <script>
@@ -462,9 +464,8 @@ for ($i = 6; $i >= 0; $i--) {
                 }
             }
         });
-    })();
 
-    // ---------- BAR: BORROWS LAST 7 DAYS ----------
+            // ---------- BAR: BORROWS LAST 7 DAYS ----------
 
 const borrowCtx = document
     .getElementById('borrowChart')
@@ -541,6 +542,9 @@ new Chart(borrowCtx, {
         }
     }
 });
+    })();
+
+
 </script>
 
 </html>
